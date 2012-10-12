@@ -1,0 +1,20 @@
+Number of Cameras
+2
+
+Camera 1 Name
+Sony HD Eye for PS3 (SLEH 00201)
+
+Camera 2 Name
+USB Video Class Video
+
+Camera Width
+320
+
+Camera Height
+240
+
+Camera Framerate
+30
+
+Row Count
+1

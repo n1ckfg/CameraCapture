@@ -1,60 +1,88 @@
 import processing.video.*;
 import codeanticode.gsvideo.*;
 
-int numCameras = 2;
-GSCapture[] cam = new GSCapture[numCameras];
-String[] cameraList;
+int numCameras = 1;
+int cW = 640;
+int cH = 480;
+int fps = 30;
+int sW, sH;
+int rowCount = 2;
+
+GSCapture[] cam;
+String[] camNames;
+String[] captureList;
+
 PFont font;
 int fontSize = 12;
-boolean showcameraList = false;
-String nameDV = "DV Video";
-String nameFW = "IIDC FireWire Video";
-String namePS3 = "Sony HD Eye for PS3 (SLEH 00201)";
-String nameUSB = "USB Video Class Video";
+boolean firstRun = true;
+boolean showGSCaptureList = false;
+String defaultName = "USB Video Class Video";
+// some common camera names: 
+// USB Video Class Video
+// DV Video
+// IIDC FireWire Video
+// Sony HD Eye for PS3 (SLEH 00201)
 
+void initSettings() {
+  cam = new GSCapture[numCameras];
+  camNames = new String[numCameras];
+  Settings settings = new Settings("settings.txt");
+  //width
+  if (numCameras>rowCount) {
+    sW = cW * rowCount;
+  } else {
+    sW = cW * numCameras;
+  }
+  //height
+  if (numCameras>rowCount) {
+    sH = int(cH * rounder(float(numCameras)/float(rowCount), 0));
+  } else {
+    sH = cH;
+  }
+}
 
 void setup() {
-  size(1280, 480);
-  cameraList = Capture.list();
-  if (cameraList.length == 0) {
-    println("There are no cameras available for capture.");
-    exit();
-  } 
-  else {
-    println("Available cameras:");
-    for (int i = 0; i < cameraList.length; i++) {
-      println(i+".  " + cameraList[i]);
+  initSettings();
+  size(sW, sH);
+  frameRate(fps);
+  captureList = Capture.list();
+  for (int i=0;i<cam.length;i++) {
+    try {
+      cam[i] = new GSCapture(this, cW, cH, camNames[i], fps);
+      cam[i].start();
+    }
+    catch(Exception e) {
     }
   }
-  //you can call either a specific device, or specify width, height, fps.
-  cam[0] = new GSCapture(this, 640, 480, namePS3, 30);
-  cam[1] = new GSCapture(this, 640, 480, nameUSB, 30);
-  //cam[0] = new Capture(this, 640, 480, 30);
-  
-  for (int i=0;i<cam.length;i++) {
-    cam[i].start();
-  }
-  
+
   font = createFont("Arial", fontSize);
 }
 
 void draw() {
   background(127);
+  int counter=0;
   for (int i=0;i<cam.length;i++) {
+    try{
     if (cam[i].available()) {
       cam[i].read();
     }
+    if(rowCount>1){
+      image(cam[i], i*cW, i*counter*cH, cW, cH);
+    }else{
+      image(cam[i], 0, i*cH, cW, cH);
+    }
+    }catch(Exception e){ }
+    if(i>rowCount-1) counter++;
   }
-  image(cam[0], 0, 0, 640, 480);
-  image(cam[1], 640, 0, 640, 480);
-  if (showcameraList) {
+
+  if (showGSCaptureList) {
     textFont(font, fontSize);
     noStroke();
-    for (int i=0;i<cameraList.length;i++) {
-      String sayText = i+".  " + cameraList[i];
-      fill(255, 50);
+    for (int i=0;i<captureList.length;i++) {
+      String sayText = i+".  " + captureList[i];
+      fill(0, 150);
       text(sayText, 1+fontSize, 1+(1.5 * fontSize)+(i*fontSize));
-      fill(0);
+      fill(255);
       text(sayText, fontSize, (1.5 * fontSize)+(i*fontSize));
     }
   }
@@ -62,7 +90,14 @@ void draw() {
 
 void keyPressed() {
   if (key=='c'||key=='C') {
-    showcameraList = !showcameraList;
+    showGSCaptureList = !showGSCaptureList;
   }
+}
+
+float rounder(float _val, float _places) {
+  _val *= pow(10, _places);
+  _val = round(_val);
+  _val /= pow(10, _places);
+  return _val;
 }
 
