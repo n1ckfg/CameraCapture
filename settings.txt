@@ -1,17 +1,17 @@
 Number of Cameras
-2
+1
 
 Camera 1 Name
-Sony HD Eye for PS3 (SLEH 00201)
-
-Camera 2 Name
 USB Video Class Video
 
+Camera 2 Name
+Sony HD Eye for PS3 (SLEH 00201)
+
 Camera Width
-320
+640
 
 Camera Height
-240
+480
 
 Camera Framerate
 30
