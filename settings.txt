@@ -1,5 +1,5 @@
 Number of Cameras
-1
+2
 
 Camera 1 Name
 USB Video Class Video
@@ -17,4 +17,4 @@ Camera Framerate
 30
 
 Row Count
-1
+2

@@ -1,3 +1,5 @@
+//for Processing 1.5
+
 import processing.video.*;
 import codeanticode.gsvideo.*;
 
